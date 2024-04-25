@@ -1,35 +1,28 @@
 package com.mygdx.pairanimalgame;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class AnimalCard extends Group {
-    static int width = 68 - 10;
-    static int height = 80 - 10;
+    static int width = 68 - 15;
+    static int height = 80 - 15;
     static int marginLeft = 100;
     static int marginBottom = 100;
     private final Image border;
-    private final int id;
+    private final int type;
     private boolean selected;
     private int indexX;
     private int indexY;
+    private boolean isActive = true;
 
-    public AnimalCard(Image cucxilau, Image animal, int id,
+    public AnimalCard(Image cucxilau, Image animal, int type,
                       Image border, int indexX, int indexY) {
         this.border = border;
         this.indexX = indexX;
         this.indexY = indexY;
-        this.id = id;
+        this.type = type;
 
         animal.setPosition(8, 21);
 
@@ -41,16 +34,16 @@ public class AnimalCard extends Group {
 
         setBounds(cucxilau.getX(), cucxilau.getY(),
                 cucxilau.getImageWidth(), cucxilau.getImageHeight());
-        setPosition(AnimalCard.width*indexX + marginLeft,
-                GameScreen.height - AnimalCard.height*indexY - marginBottom - AnimalCard.height);
+        setPosition(AnimalCard.width*indexY + marginLeft,
+                GameScreen.height - AnimalCard.height*indexX - marginBottom - AnimalCard.height);
     }
 
-    public AnimalCard(TextureRegion cucxilau, TextureRegion an, int id, TextureRegion selected, int row, int col) {
-        this(new Image(cucxilau), new Image(an), id, new Image(selected), row, col);
+    public AnimalCard(TextureRegion cucxilau, TextureRegion an, int type, TextureRegion selected, int row, int col) {
+        this(new Image(cucxilau), new Image(an), type, new Image(selected), row, col);
     }
 
-    public int getId() {
-        return id;
+    public int getType() {
+        return type;
     }
 
     public int getIndexX() {
@@ -64,8 +57,9 @@ public class AnimalCard extends Group {
         this.indexX = indexX;
         this.indexY = indexY;
 
-        setPosition(AnimalCard.width*indexX + marginLeft,
-                GameScreen.height - AnimalCard.height*indexY - marginBottom - AnimalCard.height);
+        setPosition(AnimalCard.width*indexY + marginLeft,
+                GameScreen.height - AnimalCard.height*indexX - marginBottom - AnimalCard.height);
+        toFront();
         return this;
     }
     public boolean isSelected() {
@@ -76,4 +70,11 @@ public class AnimalCard extends Group {
         border.setVisible(selected);
     }
 
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 }

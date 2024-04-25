@@ -4,6 +4,8 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -24,6 +26,7 @@ public class GameScreen extends Game {
 
     AnimalCard preAnimal;
     //AnimalCard[][] matrix;
+    EffectMN effectMN;
 
     @Override
     public void create() {
@@ -44,40 +47,32 @@ public class GameScreen extends Game {
 
         assetMN = new AssetManager();
         assetMN.load("texture/animal.atlas", TextureAtlas.class);
-        assetMN.finishLoading();
-        animalAtlas = assetMN.get("texture/animal.atlas", TextureAtlas.class);
-
         assetMN.load("texture/play.atlas", TextureAtlas.class);
-
-        TextureRegion selected = new TextureRegion(animalAtlas.findRegion("selected"));
-        TextureRegion cucxilau = new TextureRegion(animalAtlas.findRegion("cucxilau1"));
-        TextureRegion[] animalRegions = new TextureRegion[50];
-        for (int i = 0; i<animalRegions.length;i++){
-            animalRegions[i] = new TextureRegion(animalAtlas.findRegion(String.valueOf(i)));
-        }
+        assetMN.load("effect/firework.p", ParticleEffect.class);
+        assetMN.load("effect/laze.p", ParticleEffect.class);
 
 
-        //AnimalCard.itemWidth = cucxilau.getRegionWidth() - 10;
-        //AnimalCard.itemHeight = cucxilau.getRegionHeight() - 10;
-        //AnimalCard.marginLeft = 100;
-        //AnimalCard.marginBottom = 100;
 
-        createAnimalMatric(animalRegions, cucxilau, selected);
     }
 
     @Override
     public void render() {
-        ScreenUtils.clear(0, 0, 1, 1);
-        if(playAtlas == null){
-            if(assetMN.update()) {
+        ScreenUtils.clear(0, 0, 0, 1);
+        if(assetMN.update()){
+            if(playAtlas == null){
                 playAtlas = assetMN.get("texture/play.atlas", TextureAtlas.class);
+            }
+            if(animalAtlas == null){
+                animalAtlas = assetMN.get("texture/animal.atlas", TextureAtlas.class);
+                createAnimalMatrix();
+            }
+            if(effectMN == null){
+                effectMN = new EffectMN(assetMN);
             }
         }
 
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
-
-
     }
 
     @Override
@@ -91,32 +86,46 @@ public class GameScreen extends Game {
         animalAtlas.dispose();
         playAtlas.dispose();
         stage.dispose();
+        effectMN.dispose();
     }
 
-    private void createAnimalMatric(TextureRegion[] animalRegions, TextureRegion cucxilau, TextureRegion selected) {
-        int r = 7, c = 4;
+    private void createAnimalMatrix() {
+        TextureRegion selected = new TextureRegion(animalAtlas.findRegion("selected"));
+        TextureRegion cucxilau = new TextureRegion(animalAtlas.findRegion("cucxilau1"));
+        TextureRegion[] animalRegions = new TextureRegion[50];
+        for (int i = 0; i<animalRegions.length;i++){
+            animalRegions[i] = new TextureRegion(animalAtlas.findRegion(String.valueOf(i)));
+        }
+
+        int r = 3, c = 6;
         AnimalCard[][] matrix = new AnimalCard[r+2][c+2];
-        int[][] animalId = EvenFrequencyMatrix.generateMatrixWithEvenFrequency(r,c,50);
-        EvenFrequencyMatrix.printMatrix(animalId);
-        int id = -1;
+        int[][] animalType = EvenFrequencyMatrix.generateMatrixWithEvenFrequency(r,c,50);
+        EvenFrequencyMatrix.printMatrix(animalType);
+
+        //AnimalCard.width = cucxilau.getRegionWidth() - 10;
+        //AnimalCard.height = cucxilau.getRegionHeight() - 10;
+        AnimalCard.marginLeft = Gdx.graphics.getWidth()/2 - AnimalCard.width*(c+2)/2;
+        AnimalCard.marginBottom = Gdx.graphics.getHeight()/2 - AnimalCard.height*(r+2)/2;
+
+
+        int type = -1;
         for (int row = 0; row<matrix.length; row++){
             for(int col = 0; col<matrix[0].length; col++){
-
                 // hide animals
                 if(row == 0 || col == 0 || row == matrix.length - 1 || col == matrix[0].length - 1){
-                    id = 0;
-                    TextureRegion an = animalRegions[id];
-                    AnimalCard animalCard = new AnimalCard(cucxilau, an, id, selected, row, col);
+                    type = 0;
+                    TextureRegion an = animalRegions[type];
+                    AnimalCard animalCard = new AnimalCard(cucxilau, an, type, selected, row, col);
                     animalCard.setVisible(false);
+                    animalCard.setActive(false);
                     matrix[row][col] = animalCard;
                     stage.addActor(animalCard);
                     continue;
                 }
-
                 // main animals
-                id = animalId[row - 1][col - 1];
-                TextureRegion an = animalRegions[id];
-                AnimalCard animalCard = new AnimalCard(cucxilau, an, id, selected, row, col);
+                type = animalType[row - 1][col - 1];
+                TextureRegion an = animalRegions[type];
+                AnimalCard animalCard = new AnimalCard(cucxilau, an, type, selected, row, col);
                 animalCard.addListener(new ClickListener(){
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
@@ -125,11 +134,13 @@ public class GameScreen extends Game {
                             preAnimal.setSelected(true);
                         }
                         else if(Pikachu.canMatch(matrix, animalCard.getIndexX(), animalCard.getIndexY(), preAnimal.getIndexX(), preAnimal.getIndexY())){
-                            animalCard.setVisible(false);
-                            preAnimal.setVisible(false);
+                            animalCard.setSelected(true);
+                            stage.addActor(effectMN.getFireworkEffectActor(animalCard));
+                            stage.addActor(effectMN.getFireworkEffectActor(preAnimal));
                             preAnimal = null;
 
-                            if(Pikachu.isWin(matrix)) createAnimalMatric(animalRegions, cucxilau, selected);
+                            Pikachu.foundPath.print();
+                            if(Pikachu.isWin(matrix)) createAnimalMatrix();
                             else if(!Pikachu.anyMatchPossible(matrix)) Pikachu.shuffleMatrixExceptInvisible(matrix);
                         }
                         else {
@@ -155,4 +166,12 @@ public class GameScreen extends Game {
         }
         if(!Pikachu.anyMatchPossible(matrix)) Pikachu.shuffleMatrixExceptInvisible(matrix);
     }
+
+    private void reCreateAnimalMatrix() {
+
+    }
+}
+
+enum AnimalMatrixBehaviour{
+
 }

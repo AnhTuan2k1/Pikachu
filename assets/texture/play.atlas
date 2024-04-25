@@ -35,8 +35,7 @@ hammer
 bounds:1940,1927,50,53
 laser1
 bounds:944,955,28,226
-laser1
-index:2
+laser12
 bounds:222,65,226,28
 laser2
 bounds:1909,1813,29,226
