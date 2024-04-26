@@ -25,6 +25,7 @@ public class Effect extends Actor {
         super.act(delta);
         effect.update(delta);
         elapsedTime += delta; // Cập nhật thời gian đã trôi qua
+        toFront();
 
         if (effect.isComplete()) {
             if(animalCard != null) animalCard.setVisible(false);
@@ -32,10 +33,9 @@ public class Effect extends Actor {
             remove();  // Xóa actor khỏi stage sau khi hiệu ứng hoàn thành
         }
 
-/*        if(elapsedTime >= 2) {
-            effect.free();
-            remove();
-        }*/
+        if(elapsedTime >= 0.1f) {
+            if(animalCard != null) animalCard.setVisible(false);
+        }
     }
 
     @Override

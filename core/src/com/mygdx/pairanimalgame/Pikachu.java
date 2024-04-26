@@ -1,5 +1,7 @@
 package com.mygdx.pairanimalgame;
 
+import com.badlogic.gdx.scenes.scene2d.Action;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -137,10 +139,19 @@ public class Pikachu {
             int pos = positions.get(index);
             int row = pos / cols;
             int col = pos % cols;
-            matrix[row][col] = elements.get(index).setIndex(row, col);
+
+
+            AnimalCard animal = elements.get(index);
+            // check if animal is moving. if moving-> completed it before change position
+            if(animal.isActionActive()) {
+                for (Action action : animal.getActions()) {
+                    action.act(Float.MAX_VALUE);
+                }
+            }
+            animal.setIndex(row,col).toFront();
+            matrix[row][col] = animal;
         }
 
-        //trộn lại
         if(!anyMatchPossible(matrix)) shuffleMatrixExceptInvisible(matrix);
     }
 
@@ -203,6 +214,14 @@ public class Pikachu {
             }
         }
         return true;
+    }
+
+    public static void reDrawIndexMatrix(AnimalCard[][] matrix) {
+        for (AnimalCard[] row : matrix) {
+            for (AnimalCard value : row) {
+                value.toFront();
+            }
+        }
     }
 
 }

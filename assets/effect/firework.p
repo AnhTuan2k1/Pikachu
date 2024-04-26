@@ -2,32 +2,32 @@ Flame
 - Delay -
 active: false
 - Duration - 
-lowMin: 300.0
-lowMax: 300.0
+lowMin: 50.0
+lowMax: 50.0
 - Count - 
 min: 0
 max: 9000
 - Emission - 
 lowMin: 500.0
-lowMax: 500.0
+lowMax: 2000.0
 highMin: 2000.0
-highMax: 2000.0
+highMax: 5000.0
 relative: true
 scalingCount: 1
 scaling0: 1.0
 timelineCount: 1
 timeline0: 0.0
 - Life - 
-lowMin: 200.0
+lowMin: 100.0
 lowMax: 200.0
 highMin: 200.0
-highMax: 200.0
-relative: true
+highMax: 300.0
+relative: false
 scalingCount: 1
 scaling0: 1.0
 timelineCount: 1
 timeline0: 0.0
-independent: false
+independent: true
 - Life Offset - 
 active: false
 independent: false
@@ -59,9 +59,9 @@ timelineCount: 1
 timeline0: 0.0
 - X Scale - 
 lowMin: 2.0
-lowMax: 2.0
-highMin: 2.0
-highMax: 2.0
+lowMax: 3.0
+highMin: 3.0
+highMax: 5.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -71,10 +71,10 @@ timeline0: 0.0
 active: false
 - Velocity - 
 active: true
-lowMin: 0.0
-lowMax: 0.0
-highMin: 70.0
-highMax: 70.0
+lowMin: 100.0
+lowMax: 250.0
+highMin: 200.0
+highMax: 300.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -125,12 +125,12 @@ relative: false
 scalingCount: 4
 scaling0: 0.0
 scaling1: 1.0
-scaling2: 0.75
+scaling2: 0.74576217
 scaling3: 0.0
 timelineCount: 4
 timeline0: 0.0
 timeline1: 0.2
-timeline2: 0.8
+timeline2: 0.7916667
 timeline3: 1.0
 - Options - 
 attached: false
