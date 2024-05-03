@@ -1,6 +1,7 @@
 package com.mygdx.pairanimalgame;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -15,19 +16,25 @@ public class AnimalMatrix extends Actor {
     private final Stage stage;
     private final TextureAtlas animalAtlas;
     private final EffectMN effectMN;
-    private AnimalMatrixBehaviour matrixBehaviour = AnimalMatrixBehaviour.BOTTOM;
+    AnimalMatrixBehaviour matrixBehaviour = AnimalMatrixBehaviour.MIDDLE_HORIZONTAL;
     AnimalCard preAnimal;
     AnimalCard[][] matrix;
+    int level = 1;
+    private final float marginLeft = 100;
+    private final float marginTop = 100;
 
-    public AnimalMatrix(Stage stage, TextureAtlas animalAtlas, EffectMN effectMN) {
+    public AnimalMatrix(Stage stage, TextureAtlas animalAtlas, EffectMN effectMN, GameData data) {
         this.stage = stage;
         this.animalAtlas = animalAtlas;
         this.effectMN = effectMN;
 
-        createAnimalMatrix();
+        if(data==null) createAnimalMatrix(3,8, AnimalMatrixBehaviour.MIDDLE_HORIZONTAL);
+        else loadAnimalMatrix(data);
     }
+    private void createAnimalMatrix(int r, int c, AnimalMatrixBehaviour behaviour) {
+        matrixBehaviour = behaviour;
+        level = 1;
 
-    private void createAnimalMatrix() {
         TextureRegion selected = new TextureRegion(animalAtlas.findRegion("selected"));
         TextureRegion cucxilau = new TextureRegion(animalAtlas.findRegion("cucxilau1"));
         TextureRegion[] animalRegions = new TextureRegion[50];
@@ -35,15 +42,17 @@ public class AnimalMatrix extends Actor {
             animalRegions[i] = new TextureRegion(animalAtlas.findRegion(String.valueOf(i)));
         }
 
-        int r = 5, c = 8;
         matrix = new AnimalCard[r+2][c+2];
         int[][] animalType = EvenFrequencyMatrix.generateMatrixWithEvenFrequency(r,c,50);
         EvenFrequencyMatrix.printMatrix(animalType);
 
-        //AnimalCard.width = cucxilau.getRegionWidth() - 10;
-        //AnimalCard.height = cucxilau.getRegionHeight() - 10;
-        AnimalCard.marginLeft = Gdx.graphics.getWidth()/2 - AnimalCard.width*(c+2)/2;
-        AnimalCard.marginBottom = Gdx.graphics.getHeight()/2 - AnimalCard.height*(r+2)/2;
+
+        float scaleX = (Gdx.graphics.getWidth() - marginLeft*2) / (AnimalCard.width*c);
+        float scaleY = (Gdx.graphics.getHeight() - marginTop*2) / (AnimalCard.height*r);
+        AnimalCard.setAnimalScale(Math.min(scaleX, scaleY));
+
+        AnimalCard.marginLeft = Gdx.graphics.getWidth()/2 - AnimalCard.width*AnimalCard.getAnimalScale()*(c+2)/2;
+        AnimalCard.marginBottom = Gdx.graphics.getHeight()/2 - AnimalCard.height*AnimalCard.getAnimalScale()*(r+2)/2;
 
 
         int type = -1;
@@ -227,7 +236,8 @@ public class AnimalMatrix extends Actor {
         }
         else if(matrixBehaviour == AnimalMatrixBehaviour.MIDDLE_VERTICAL){
             //left to middle
-            for(int i = matrix.length/2; i>0; i--){
+            int pos = (matrix[0].length-2)/2 + matrix[0].length%2;
+            for(int i = pos; i>0; i--){
                 if(!matrix[x1][i].isActive()){ //get empty position
                     for(int j = i-1; j>0; j--){
                         if(matrix[x1][j].isActive()){   //swap with an value
@@ -256,7 +266,8 @@ public class AnimalMatrix extends Actor {
                 }
             }
             //right to middle
-            for(int i = matrix.length/2 + 1; i<matrix[0].length-2; i++){
+            pos = (matrix[0].length-2)/2 + matrix[0].length%2 + 1;
+            for(int i = pos; i<matrix[0].length-2; i++){
                 if(!matrix[x1][i].isActive()){ //get empty position
                     for(int j = i+1; j<matrix[0].length-1; j++){
                         if(matrix[x1][j].isActive()){   //swap with an value
@@ -287,7 +298,8 @@ public class AnimalMatrix extends Actor {
         }
         else if(matrixBehaviour == AnimalMatrixBehaviour.MIDDLE_HORIZONTAL){
             //top to middle
-            for(int i = matrix.length/2; i>0; i--){
+            int pos = (matrix.length-2)/2 + matrix.length%2;
+            for(int i = pos; i>0; i--){
                 if(!matrix[i][y1].isActive()){ //get empty position
                     for(int j = i-1; j>0; j--){
                         if(matrix[j][y1].isActive()){   //swap with an value
@@ -316,7 +328,8 @@ public class AnimalMatrix extends Actor {
                 }
             }
             //bottom to middle
-            for(int i = matrix.length/2 + 1; i<matrix.length-2; i++){
+            pos = (matrix.length-2)/2 + matrix.length%2 + 1;
+            for(int i = pos; i<matrix.length-2; i++){
                 if(!matrix[i][y1].isActive()){ //get empty position
                     for(int j = i+1; j<matrix.length-1; j++){
                         if(matrix[j][y1].isActive()){   //swap with an value
@@ -349,9 +362,195 @@ public class AnimalMatrix extends Actor {
     }
 
     private void reCreateAnimalMatrix() {
+        freeMatrix();
         AnimalMatrixBehaviour[] behaviour = AnimalMatrixBehaviour.values();
         matrixBehaviour = behaviour[new Random().nextInt(behaviour.length)];
-        createAnimalMatrix();
+        level++;
+
+        TextureRegion selected = new TextureRegion(animalAtlas.findRegion("selected"));
+        TextureRegion cucxilau = new TextureRegion(animalAtlas.findRegion("cucxilau1"));
+        TextureRegion[] animalRegions = new TextureRegion[50];
+        for (int i = 0; i<animalRegions.length;i++){
+            animalRegions[i] = new TextureRegion(animalAtlas.findRegion(String.valueOf(i)));
+        }
+
+        int r = (matrix.length-2)+level;
+        int c = (matrix[0].length-2)+2*level;
+        if(r%2!=0 && c%2!=0) c++;
+
+        matrix = new AnimalCard[r+2][c+2];
+        int[][] animalType = EvenFrequencyMatrix.generateMatrixWithEvenFrequency(r,c,50);
+        EvenFrequencyMatrix.printMatrix(animalType);
+
+        float scaleX = (Gdx.graphics.getWidth() - marginLeft*2) / (AnimalCard.width*c);
+        float scaleY = (Gdx.graphics.getHeight() - marginTop*2) / (AnimalCard.height*r);
+        AnimalCard.setAnimalScale(Math.min(scaleX, scaleY));
+
+        AnimalCard.marginLeft = Gdx.graphics.getWidth()/2 - AnimalCard.width*AnimalCard.getAnimalScale()*(c+2)/2;
+        AnimalCard.marginBottom = Gdx.graphics.getHeight()/2 - AnimalCard.height*AnimalCard.getAnimalScale()*(r+2)/2;
+
+
+        int type = -1;
+        for (int row = 0; row<matrix.length; row++){
+            for(int col = 0; col<matrix[0].length; col++){
+                // hide animals
+                if(row == 0 || col == 0 || row == matrix.length - 1 || col == matrix[0].length - 1){
+                    type = 0;
+                    TextureRegion an = animalRegions[type];
+                    AnimalCard animalCard = new AnimalCard(cucxilau, an, type, selected, row, col);
+                    animalCard.setVisible(false);
+                    animalCard.setActive(false);
+                    matrix[row][col] = animalCard;
+                    stage.addActor(animalCard);
+                    continue;
+                }
+                // main animals
+                type = animalType[row - 1][col - 1];
+                TextureRegion an = animalRegions[type];
+                AnimalCard animalCard = new AnimalCard(cucxilau, an, type, selected, row, col);
+                animalCard.addListener(new ClickListener(){
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        if(preAnimal == null) {
+                            preAnimal = animalCard;
+                            preAnimal.setSelected(true);
+                        }
+                        else if(Pikachu.canMatch(matrix, animalCard.getIndexX(), animalCard.getIndexY(), preAnimal.getIndexX(), preAnimal.getIndexY())){
+
+                            animalCard.setSelected(true);
+                            animalCard.setInActive(stage, effectMN);
+                            preAnimal.setInActive(stage, effectMN);
+
+                            activeMatrixBehaviour(animalCard);
+                            preAnimal = null;
+
+                            Pikachu.foundPath.print();
+                            if(Pikachu.isWin(matrix)) reCreateAnimalMatrix();
+                            else if(!Pikachu.anyMatchPossible(matrix)) Pikachu.shuffleMatrixExceptInvisible(matrix);
+
+                            //printAnimals(matrix);
+                        }
+                        else {
+                            if(preAnimal == animalCard){
+                                boolean selected = preAnimal.isSelected();
+                                preAnimal.setSelected(!selected);
+                                if(selected) preAnimal = null;
+                            }
+                            else {
+                                preAnimal.setSelected(false);
+                                preAnimal = animalCard;
+                                preAnimal.setSelected(true);
+                            }
+
+                        }
+                    }
+
+                });
+
+                matrix[row][col] = animalCard;
+                stage.addActor(animalCard);
+            }
+        }
+        if(!Pikachu.anyMatchPossible(matrix)) Pikachu.shuffleMatrixExceptInvisible(matrix);
+    }
+
+    private void loadAnimalMatrix(GameData data) {
+        System.out.println("loadAnimalMatrix. load game");
+        matrixBehaviour = AnimalMatrixBehaviour.values()[data.getMatrixBehaviour()];
+        level = data.getCurrentLevel();
+
+        TextureRegion selected = new TextureRegion(animalAtlas.findRegion("selected"));
+        TextureRegion cucxilau = new TextureRegion(animalAtlas.findRegion("cucxilau1"));
+        TextureRegion[] animalRegions = new TextureRegion[50];
+        for (int i = 0; i<animalRegions.length;i++){
+            animalRegions[i] = new TextureRegion(animalAtlas.findRegion(String.valueOf(i)));
+        }
+
+        int r = data.getMatrix().length;
+        int c = data.getMatrix()[0].length;
+        matrix = new AnimalCard[r+2][c+2];
+        int[][] animalType = data.getMatrix();
+        EvenFrequencyMatrix.printMatrix(animalType);
+
+
+        float scaleX = (Gdx.graphics.getWidth() - marginLeft*2) / (AnimalCard.width*c);
+        float scaleY = (Gdx.graphics.getHeight() - marginTop*2) / (AnimalCard.height*r);
+        AnimalCard.setAnimalScale(Math.min(scaleX, scaleY));
+
+        AnimalCard.marginLeft = Gdx.graphics.getWidth()/2 - AnimalCard.width*AnimalCard.getAnimalScale()*(c+2)/2;
+        AnimalCard.marginBottom = Gdx.graphics.getHeight()/2 - AnimalCard.height*AnimalCard.getAnimalScale()*(r+2)/2;
+
+
+        int type = -1;
+        for (int row = 0; row<matrix.length; row++){
+            for(int col = 0; col<matrix[0].length; col++){
+                // hide animals
+                if(row == 0 || col == 0 || row == matrix.length - 1 || col == matrix[0].length - 1
+                || animalType[row - 1][col - 1] == -1){
+                    type = 0;
+                    TextureRegion an = animalRegions[type];
+                    AnimalCard animalCard = new AnimalCard(cucxilau, an, type, selected, row, col);
+                    animalCard.setVisible(false);
+                    animalCard.setActive(false);
+                    matrix[row][col] = animalCard;
+                    stage.addActor(animalCard);
+                    continue;
+                }
+                // main animals
+                type = animalType[row - 1][col - 1];
+                TextureRegion an = animalRegions[type];
+                AnimalCard animalCard = new AnimalCard(cucxilau, an, type, selected, row, col);
+                animalCard.addListener(new ClickListener(){
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        if(preAnimal == null) {
+                            preAnimal = animalCard;
+                            preAnimal.setSelected(true);
+                        }
+                        else if(Pikachu.canMatch(matrix, animalCard.getIndexX(), animalCard.getIndexY(), preAnimal.getIndexX(), preAnimal.getIndexY())){
+
+                            animalCard.setSelected(true);
+                            animalCard.setInActive(stage, effectMN);
+                            preAnimal.setInActive(stage, effectMN);
+
+                            activeMatrixBehaviour(animalCard);
+                            preAnimal = null;
+
+                            Pikachu.foundPath.print();
+                            if(Pikachu.isWin(matrix)) reCreateAnimalMatrix();
+                            else if(!Pikachu.anyMatchPossible(matrix)) Pikachu.shuffleMatrixExceptInvisible(matrix);
+
+                            //printAnimals(matrix);
+                        }
+                        else {
+                            if(preAnimal == animalCard){
+                                boolean selected = preAnimal.isSelected();
+                                preAnimal.setSelected(!selected);
+                                if(selected) preAnimal = null;
+                            }
+                            else {
+                                preAnimal.setSelected(false);
+                                preAnimal = animalCard;
+                                preAnimal.setSelected(true);
+                            }
+
+                        }
+                    }
+
+                });
+
+                matrix[row][col] = animalCard;
+                stage.addActor(animalCard);
+            }
+        }
+        if(!Pikachu.anyMatchPossible(matrix)) Pikachu.shuffleMatrixExceptInvisible(matrix);
+    }
+    private void freeMatrix(){
+        for (AnimalCard[] row : matrix) {
+            for (AnimalCard value : row) {
+                value.remove();
+            }
+        }
     }
 
     private void adjustOderDraw(){

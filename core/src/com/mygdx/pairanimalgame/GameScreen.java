@@ -6,16 +6,12 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
-import java.util.LinkedList;
-import java.util.Random;
 
 public class GameScreen extends Game {
     static float height = 0;
@@ -27,6 +23,7 @@ public class GameScreen extends Game {
     Stage stage;
     EffectMN effectMN;
     AnimalMatrix animalMatrix;
+    PauseButton pauseButton;
 
     @Override
     public void create() {
@@ -54,10 +51,12 @@ public class GameScreen extends Game {
 
     @Override
     public void render() {
-        ScreenUtils.clear(0, 0, 0, 1);
+        ScreenUtils.clear(0, 0, 0.5f, 1);
         if(assetMN.update()){
             if(playAtlas == null){
                 playAtlas = assetMN.get("texture/play.atlas", TextureAtlas.class);
+                createPauseButton();
+                createPauseButton2();
             }
             if(animalAtlas == null){
                 animalAtlas = assetMN.get("texture/animal.atlas", TextureAtlas.class);
@@ -67,7 +66,7 @@ public class GameScreen extends Game {
             }
 
             if(animalMatrix == null){
-                animalMatrix = new AnimalMatrix(stage, animalAtlas,effectMN);
+                animalMatrix = new AnimalMatrix(stage, animalAtlas,effectMN, GameData.load());
             }
 
         }
@@ -75,7 +74,6 @@ public class GameScreen extends Game {
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
     }
-
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
@@ -90,4 +88,40 @@ public class GameScreen extends Game {
         effectMN.dispose();
     }
 
+    @Override
+    public void pause() {
+        super.pause();
+        System.out.println("pause");
+        GameData.save(new GameData(animalMatrix));
+    }
+    @Override
+    public void resume() {
+        super.resume();
+        System.out.println("resume");
+        //GameData.removePreferences();
+    }
+
+    private void createPauseButton() {
+        pauseButton = new PauseButton(playAtlas);
+        pauseButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                GameData.save(new GameData(animalMatrix));
+                //GameData.removePreferences();
+            }
+        });
+        stage.addActor(pauseButton);
+    }
+
+    private void createPauseButton2() {
+        pauseButton = new PauseButton(playAtlas);
+        pauseButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                GameData.removePreferences();
+            }
+        });
+        pauseButton.setPosition(Gdx.graphics.getWidth() - 170, Gdx.graphics.getHeight() - 70);
+        stage.addActor(pauseButton);
+    }
 }
