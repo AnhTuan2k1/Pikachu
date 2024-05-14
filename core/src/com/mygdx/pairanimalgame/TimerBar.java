@@ -40,7 +40,6 @@ public class TimerBar extends Actor{
             }
             if(animalMatrix!=null&&animalMatrix.remainSeconds > timeLeft + 1){
                 animalMatrix.remainSeconds--;
-                System.out.println(GameManager.getInstance().isPaused());
             }
         }
     }

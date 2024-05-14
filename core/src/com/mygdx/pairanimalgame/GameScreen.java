@@ -26,6 +26,9 @@ public class GameScreen implements Screen {
     }
     private EffectMN effectMN;
     private AnimalMatrix animalMatrix;
+    public AnimalMatrix getAnimalMatrix() {
+        return animalMatrix;
+    }
     private GameData gameData;
     private TimerBar timerbar;
     private PopupDialog pauseWindow;
@@ -59,7 +62,7 @@ public class GameScreen implements Screen {
 
         animalMatrix = new AnimalMatrix(stage, animalAtlas, effectMN, gameData);
         createUI();
-        animalMatrix.adjustOderDraw();
+        //animalMatrix.adjustOderDraw();
 
         ConnectAnimalGame.getInstance().filterAsset();
     }
@@ -110,7 +113,6 @@ public class GameScreen implements Screen {
         verticalGroup.addActor(createRandomButton());
         verticalGroup.addActor(createRocketButton());
 
-        stage.addActor(createBackGround());
         stage.addActor(verticalGroup);
         stage.addActor(createTimeBar());
         stage.addActor(createPauseButton());
@@ -119,6 +121,7 @@ public class GameScreen implements Screen {
         stage.addActor(createScoreLabel());
         stage.addActor(createLevelTextLabel());
         stage.addActor(createPauseWindow());
+        stage.addActor(createBackGround());
     }
 
     private Actor createPauseWindow(){

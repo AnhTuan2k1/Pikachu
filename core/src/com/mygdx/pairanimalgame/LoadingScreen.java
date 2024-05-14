@@ -3,12 +3,15 @@ package com.mygdx.pairanimalgame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.ScreenUtils;
+
+import java.awt.Font;
 
 public class LoadingScreen implements Screen {
     private final ConnectAnimalGame game;
@@ -64,6 +67,7 @@ public class LoadingScreen implements Screen {
 
         assetMN.load("texture/play.atlas", TextureAtlas.class);
         assetMN.load("texture/common.atlas", TextureAtlas.class);
+        assetMN.load("font/comic.fnt", BitmapFont.class);
 
         //assetMN.load("texture/animal.atlas", TextureAtlas.class);
         //assetMN.load("effect/firework.p", ParticleEffect.class);

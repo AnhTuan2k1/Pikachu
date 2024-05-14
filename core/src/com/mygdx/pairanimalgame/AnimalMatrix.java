@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import java.util.LinkedList;
@@ -602,6 +603,21 @@ public class AnimalMatrix extends Actor {
             }
         }
         if(!Pikachu.anyMatchPossible(matrix)) Pikachu.shuffleMatrixExceptInvisible(matrix);
+
+        createStartGameDialog();
+    }
+
+    private void createStartGameDialog() {
+        new Thread(() -> {
+            try {
+                Thread.sleep(10);
+                Gdx.app.postRunnable(() -> {
+                    stage.addActor(new StartGameDialog(stage));
+                });
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
     }
 
     public void setScore(int score) {
@@ -626,6 +642,14 @@ public class AnimalMatrix extends Actor {
         for (AnimalCard[] row : matrix) {
             for (AnimalCard value : row) {
                 if(value.isVisible()) value.toFront();
+            }
+        }
+    }
+
+    public void adjustOderDrawToBack(){
+        for (AnimalCard[] row : matrix) {
+            for (AnimalCard value : row) {
+                if(value.isVisible()) value.toBack();
             }
         }
     }

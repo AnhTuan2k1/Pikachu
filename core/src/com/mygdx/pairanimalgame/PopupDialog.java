@@ -116,9 +116,7 @@ public class PopupDialog extends Group {
 
         if(label != null)
         {
-            label.setPosition(
-                    150,
-                    getHeight()/2);
+            label.setPosition(150, getHeight()/2);
             addActor(label);
         }
         if(horizontalTable != null)

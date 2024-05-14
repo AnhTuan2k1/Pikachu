@@ -1,5 +1,6 @@
 package com.mygdx.pairanimalgame;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -14,6 +15,8 @@ public class MyLabel extends Actor {
     public MyLabel(String text) {
         this.text = text;
         this.font = new BitmapFont();
+        //this.font = ConnectAnimalGame.getInstance().getAssetMN().get("font/comic.fnt");
+        //this.font.getData().setScale(0.5f);
         this.fontColor = Color.WHITE;
         //setBounds(0,0,300,-20);
         font.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
