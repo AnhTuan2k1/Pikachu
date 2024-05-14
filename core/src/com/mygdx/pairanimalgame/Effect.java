@@ -26,9 +26,4 @@ public class Effect extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         effect.draw(batch);
     }
-
-    @Override
-    protected void positionChanged() {
-        effect.setPosition(getX(), getY());
-    }
 }

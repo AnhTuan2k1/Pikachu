@@ -1,0 +1,7 @@
+bg.png
+size:2048,2048
+repeat:none
+bg1
+bounds:2,2,1280,720
+bg2
+bounds:2,724,1280,720

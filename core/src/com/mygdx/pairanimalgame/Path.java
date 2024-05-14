@@ -24,7 +24,9 @@ class Path {
     void addPoint(int x, int y) {
         points.add(new Point(x, y));
     }
-
+    public List<Point> getPoints() {
+        return points;
+    }
     @Override
     public String toString() {
         return "Path" + points.toString();

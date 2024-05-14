@@ -10,6 +10,7 @@ import java.util.Map;
 
 public class Pikachu {
     static Path foundPath = null;
+    static Path possiblePath = null;
 
     // Kiểm tra có thể nối 2 ô hay không
     static boolean canMatch(AnimalCard[][] grid, int x1, int y1, int x2, int y2) {
@@ -157,6 +158,7 @@ public class Pikachu {
 
     // Kiểm tra trong ma trận có bất kỳ hai ô nào có thể nối được với nhau không
     static boolean anyMatchPossible(AnimalCard[][] grid) {
+        possiblePath = new Path();
         Map<Integer, List<int[]>> map = new HashMap<>();
         // Collect positions for each non-zero value
         for (int i = 0; i < grid.length; i++) {
@@ -170,6 +172,8 @@ public class Pikachu {
             }
         }
 
+        if(map.isEmpty()) throw new IllegalArgumentException("anyMatchPossible: ma trận rỗng.");
+
         // Check connections for each group of identical values
         for (List<int[]> positions : map.values()) {
             for (int i = 0; i < positions.size(); i++) {
@@ -179,6 +183,8 @@ public class Pikachu {
                     if (canMatch(grid, pos1[0], pos1[1], pos2[0], pos2[1])) {
                         System.out.println("next possible: " + pos1[0]+","+ pos1[1]+
                                 " : " + pos2[0]+","+ pos2[1]);
+                        possiblePath.addPoint(pos1[0], pos1[1]);
+                        possiblePath.addPoint(pos2[0], pos2[1]);
                         return true;
                     }
                 }

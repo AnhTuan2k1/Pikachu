@@ -1,26 +1,22 @@
 package com.mygdx.pairanimalgame;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
-import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-public class AnimalCard extends Group {
+public class AnimalCard extends Group{
     private static float animalScale = 1;
+    static float animalScaleY = 1;
     static final float width = 68 - 15;
     static final float height = 80 - 15;
-    static float marginLeft = 0;
-    static float marginBottom = 0;
+    static float marginLeft = 100;
+    static float marginBottom = 150;
     static final float animalPosWith = 8;
     static final float animalPosHeight = 21;
     private final Image border;
@@ -33,7 +29,7 @@ public class AnimalCard extends Group {
     private boolean isActive = true;
     private boolean isActionActive = false;
 
-    public AnimalCard(Image cucxilau, Image animal, int type,
+    private AnimalCard(Image cucxilau, Image animal, int type,
                       Image border, int indexX, int indexY) {
         this.border = border;
         this.animal = animal;
@@ -52,9 +48,8 @@ public class AnimalCard extends Group {
 
         //setBounds(cucxilau.getX(), cucxilau.getY(),
                 //cucxilau.getImageWidth(), cucxilau.getImageHeight());
-        float posX = AnimalCard.width*getAnimalScale()*indexY + marginLeft;
-        float posY = GameScreen.height - AnimalCard.height*getAnimalScale()*indexX - marginBottom - AnimalCard.height*getAnimalScale();
-        setPosition(posX, posY);
+
+        setPosition(getPosX(indexY), getPosY(indexX));
     }
 
     public AnimalCard(TextureRegion cucxilau, TextureRegion an, int type, TextureRegion selected, int row, int col) {
@@ -88,9 +83,7 @@ public class AnimalCard extends Group {
         this.indexX = indexX;
         this.indexY = indexY;
 
-        float posX = AnimalCard.width*getAnimalScale()*indexY + marginLeft;
-        float posY = GameScreen.height - AnimalCard.height*getAnimalScale()*indexX - marginBottom - AnimalCard.height*getAnimalScale();
-        setPosition(posX, posY);
+        setPosition(getPosX(indexY), getPosY(indexX));
         return this;
     }
 
@@ -101,10 +94,8 @@ public class AnimalCard extends Group {
         this.indexY = indexY;
         this.isActionActive = true;
 
-        float posX = AnimalCard.width*getAnimalScale()*indexY + marginLeft;
-        float posY = GameScreen.height - AnimalCard.height*getAnimalScale()*indexX - marginBottom - AnimalCard.height*getAnimalScale();
         //setPosition(posX, posY);
-        if(isActive) createAction(posX, posY);
+        if(isActive) createAction(getPosX(indexY), getPosY(indexX));
     }
 
     private void createAction(float posX, float posY) {
@@ -140,9 +131,50 @@ public class AnimalCard extends Group {
     public void setInActive(Stage stage, EffectMN effectMN) {
         isActive = false;
         stage.addActor(effectMN.getFireworkEffectActor(this));
+
+        stage.addActor(new PathActor(Pikachu.foundPath));
+
+/*        for(int i = 1; i<Pikachu.foundPath.points.size(); i++){
+            Path.Point p1 = Pikachu.foundPath.points.get(i - 1);
+            Path.Point p2 = Pikachu.foundPath.points.get(i);
+            if(p1.x == p2.x){
+                if(p1.y < p2.y){
+                    for (int j = p2.y; j > p1.y; j--){
+                        stage.addActor(effectMN.getLazeHorizontalEffectActor(new Path.Point(p1.x, j)));
+                    }
+                }
+                else if(p1.y > p2.y) {
+                    for (int j = p1.y; j > p2.y; j--) {
+                        stage.addActor(effectMN.getLazeHorizontalEffectActor(new Path.Point(p1.x, j)));
+                    }
+                }
+            }
+            else if(p1.y == p2.y){
+                if(p1.x < p2.x){
+                    for (int j = p1.x; j < p2.x; j++){
+                        stage.addActor(effectMN.getLazeVerticalEffectActor(new Path.Point(j, p1.y)));
+                    }
+                }
+                else if(p1.x > p2.x) {
+                    for (int j = p2.x; j < p1.x; j++) {
+                        stage.addActor(effectMN.getLazeVerticalEffectActor(new Path.Point(j, p1.y)));
+                    }
+                }
+            }
+        }*/
     }
 
     public boolean isActionActive() {
         return isActionActive;
+    }
+
+    public static float getPosX(int indexY){
+        return AnimalCard.width*getAnimalScale()*indexY + marginLeft;
+    }
+    public static float getPosY(int indexX){
+        return GameScreen.getInstance().stage.getHeight()
+                - AnimalCard.height*getAnimalScale()*(indexX+1)
+                - AnimalMatrix.marginTop
+                - marginBottom/2;
     }
 }
