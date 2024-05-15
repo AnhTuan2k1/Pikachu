@@ -72,7 +72,6 @@ public class AnimalMatrix extends Actor {
         AnimalCard.marginLeft = (stage.getWidth() - AnimalCard.width*AnimalCard.getAnimalScale()*(c+2))/2;
         AnimalCard.marginBottom = (stage.getHeight() - AnimalCard.height*AnimalCard.getAnimalScale()*(r+2))/2;
 
-
         int type = -1;
         for (int row = 0; row<matrix.length; row++){
             for(int col = 0; col<matrix[0].length; col++){
@@ -108,7 +107,8 @@ public class AnimalMatrix extends Actor {
                             preAnimal = null;
 
                             Pikachu.foundPath.print();
-                            increaseScore(10);
+                            increaseScore(20*(1+ComboBar.getInstance().getCombo()));
+                            ComboBar.getInstance().nextCombo();
                             if(Pikachu.isWin(matrix)){
                                 if(level >= Rank.rankName(rankName)) turnRank();
                                 else reCreateAnimalMatrix();
@@ -146,7 +146,7 @@ public class AnimalMatrix extends Actor {
         int y1 = preAnimal.getIndexY();
         int x2 = animalCard.getIndexX();
         int y2 = animalCard.getIndexY();
-
+                                  // to left
         if(matrixBehaviour == 1){
             LinkedList<AnimalCard> animalsX1 = new LinkedList<AnimalCard>();
             LinkedList<AnimalCard> animalsX2 = new LinkedList<AnimalCard>();
@@ -174,6 +174,7 @@ public class AnimalMatrix extends Actor {
                 } else break;
             }
         }
+                                      //to right
         else if(matrixBehaviour == 2){
             LinkedList<AnimalCard> animalsX1 = new LinkedList<AnimalCard>();
             LinkedList<AnimalCard> animalsX2 = new LinkedList<AnimalCard>();
@@ -201,6 +202,7 @@ public class AnimalMatrix extends Actor {
                 } else break;
             }
         }
+                                      //to top
         else if(matrixBehaviour == 3){
             LinkedList<AnimalCard> animalsY1 = new LinkedList<AnimalCard>();
             LinkedList<AnimalCard> animalsY2 = new LinkedList<AnimalCard>();
@@ -227,7 +229,9 @@ public class AnimalMatrix extends Actor {
                     matrix[i][y2] = animalY2;
                 } else break;
             }
+            adjustOderDraw(300);
         }
+                                      //to bottom
         else if(matrixBehaviour == 4){
             LinkedList<AnimalCard> animalsY1 = new LinkedList<AnimalCard>();
             LinkedList<AnimalCard> animalsY2 = new LinkedList<AnimalCard>();
@@ -255,7 +259,9 @@ public class AnimalMatrix extends Actor {
                     matrix[i][y2] = animalY2;
                 } else break;
             }
+            adjustOderDraw(300);
         }
+                                       //MIDDLE_VERTICAL,
         else if(matrixBehaviour == 5){
             //left to middle
             int pos = (matrix[0].length-2)/2 + matrix[0].length%2;
@@ -318,6 +324,7 @@ public class AnimalMatrix extends Actor {
                 }
             }
         }
+                                      // MIDDLE_HORIZONTAL
         else if(matrixBehaviour == 6){
             //top to middle
             int pos = (matrix.length-2)/2 + matrix.length%2;
@@ -379,8 +386,8 @@ public class AnimalMatrix extends Actor {
                     }
                 }
             }
+            adjustOderDraw(300);
         }
-        adjustOderDraw();
     }
 
     //TimerBar.timeMax = Rank.remainSeconds(rankName);
@@ -449,7 +456,8 @@ public class AnimalMatrix extends Actor {
                             preAnimal = null;
 
                             Pikachu.foundPath.print();
-                            increaseScore(10);
+                            increaseScore(20*(1+ComboBar.getInstance().getCombo()));
+                            ComboBar.getInstance().nextCombo();
                             if(Pikachu.isWin(matrix)){
                                 if(level >= Rank.maxLevel(rankName)) turnRank();
                                 else reCreateAnimalMatrix();
@@ -517,10 +525,11 @@ public class AnimalMatrix extends Actor {
         int[][] animalType = data.getMatrix();
         if(animalType == null) {
             createAnimalMatrix(matrixBehaviour);
+            createStartGameDialog();
             return;
         }
-        EvenFrequencyMatrix.printMatrix(animalType);
 
+        EvenFrequencyMatrix.printMatrix(animalType);
         TextureRegion selected = new TextureRegion(animalAtlas.findRegion("selected"));
         TextureRegion cucxilau = new TextureRegion(animalAtlas.findRegion("cucxilau1"));
         TextureRegion[] animalRegions = new TextureRegion[50];
@@ -535,7 +544,6 @@ public class AnimalMatrix extends Actor {
 
         AnimalCard.marginLeft = (stage.getWidth() - AnimalCard.width*AnimalCard.getAnimalScale()*(c+2))/2;
         AnimalCard.marginBottom = (stage.getHeight() - AnimalCard.height*AnimalCard.getAnimalScale()*(r+2))/2;
-
         int type = -1;
         for (int row = 0; row<matrix.length; row++){
             for(int col = 0; col<matrix[0].length; col++){
@@ -572,7 +580,8 @@ public class AnimalMatrix extends Actor {
                             preAnimal = null;
 
                             Pikachu.foundPath.print();
-                            increaseScore(10);
+                            increaseScore(20*(1+ComboBar.getInstance().getCombo()));
+                            ComboBar.getInstance().nextCombo();
                             if(Pikachu.isWin(matrix)){
                                 if(level >= Rank.maxLevel(rankName)) turnRank();
                                 else reCreateAnimalMatrix();
@@ -603,11 +612,11 @@ public class AnimalMatrix extends Actor {
             }
         }
         if(!Pikachu.anyMatchPossible(matrix)) Pikachu.shuffleMatrixExceptInvisible(matrix);
-
         createStartGameDialog();
     }
 
     private void createStartGameDialog() {
+        System.out.println("------------------createStartGameDialog------------------------");
         new Thread(() -> {
             try {
                 Thread.sleep(10);
@@ -638,12 +647,19 @@ public class AnimalMatrix extends Actor {
         }
     }
 
-    public void adjustOderDraw(){
-        for (AnimalCard[] row : matrix) {
-            for (AnimalCard value : row) {
-                if(value.isVisible()) value.toFront();
+    public void adjustOderDraw(int millisecond){
+        new Thread(() -> {
+            try {
+                Thread.sleep(millisecond);
+                for (AnimalCard[] row : matrix) {
+                    for (AnimalCard value : row) {
+                        if(value.isVisible()) value.toFront();
+                    }
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
-        }
+        }).start();
     }
 
     public void adjustOderDrawToBack(){

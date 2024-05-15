@@ -6,11 +6,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
+import java.util.Random;
+
 public class StartGameDialog extends Group {
     private final Image ready;
     private final Image go;
     private final Stage stage;
-    private MyLabel label;
+    private final MyLabel label;
+    private final AnimalMatrix matrix;
 
     public StartGameDialog(Stage stage) {
         this.ready = new Image(GameScreen.getInstance().getPlayAtlas().findRegion("ready"));
@@ -18,6 +21,7 @@ public class StartGameDialog extends Group {
         this.stage = stage;
         this.label = new MyLabel("Level " +
                 LevelText.text + " " + GameScreen.getInstance().getAnimalMatrix().rankName);
+        matrix = GameScreen.getInstance().getAnimalMatrix();
 
         setBounds(0,0, stage.getWidth(), stage.getHeight());
         initialize();
@@ -66,14 +70,59 @@ public class StartGameDialog extends Group {
 
         addAction(
                 Actions.sequence(
-                        Actions.delay(1.2f),
+                        Actions.delay(1.22f),
                         Actions.run(() -> {
                             GameManager.getInstance().onGameResume();
                             setVisible(false);
                             remove();
                         })
                 ));
+
+        if(new Random().nextInt(1,3)%2 == 0){
+            for (AnimalCard[] row : matrix.matrix) {
+                for (AnimalCard animal : row) {
+                    if(animal.isVisible()) {
+                        animal.addAction(
+                                Actions.sequence(
+                                        Actions.run(() -> animal.setY(new Random().nextInt(720,1080))),
+                                        Actions.delay( new Random().nextFloat(1,2f)),
+                                        Actions.moveTo(
+                                                AnimalCard.getPosX(animal.getIndexY()),
+                                                AnimalCard.getPosY(animal.getIndexX()) - new Random().nextInt(50,80),
+                                                new Random().nextFloat(0.05f,0.2f), Interpolation.sineOut
+                                        ),
+                                        Actions.moveTo(
+                                                AnimalCard.getPosX(animal.getIndexY()),
+                                                AnimalCard.getPosY(animal.getIndexX()),
+                                                new Random().nextFloat(0.1f,0.2f), Interpolation.sineIn
+                                        )
+                                ));
+                    }
+                }
+            }
+        }else {
+            for (AnimalCard[] row : matrix.matrix) {
+                for (AnimalCard animal : row) {
+                    if(animal.isVisible()) {
+                        animal.addAction(
+                                Actions.sequence(
+                                        Actions.fadeOut(0.01f),
+                                        Actions.delay( new Random().nextFloat(1,1.5f)),
+                                        Actions.fadeIn(0.1f, Interpolation.sineIn)
+                                )
+                        );
+                        animal.addAction(
+                                Actions.sequence(
+                                        Actions.scaleTo(0.001f, 0.001f, 0.01f),
+                                        Actions.delay( new Random().nextFloat(1,1.5f)),
+                                        Actions.scaleTo(1f, 1f, 0.1f, Interpolation.sineIn)
+                                )
+                        );
+                    }
+                }
+            }
+        }
+
+
     }
-
-
 }

@@ -121,6 +121,7 @@ public class GameScreen implements Screen {
         stage.addActor(createScoreLabel());
         stage.addActor(createLevelTextLabel());
         stage.addActor(createPauseWindow());
+        stage.addActor(ComboBar.getInstance());
         stage.addActor(createBackGround());
     }
 

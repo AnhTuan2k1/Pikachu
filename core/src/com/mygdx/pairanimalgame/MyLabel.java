@@ -33,8 +33,14 @@ public class MyLabel extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
+        //font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
         font.draw(batch, text, getX(), getY());
+    }
+
+    @Override
+    protected void scaleChanged() {
+        super.scaleChanged();
+        this.font.getData().setScale(getScaleX());
     }
 
     @Override

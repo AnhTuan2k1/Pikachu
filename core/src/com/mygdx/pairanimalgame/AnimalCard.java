@@ -1,6 +1,5 @@
 package com.mygdx.pairanimalgame;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -50,6 +49,8 @@ public class AnimalCard extends Group{
                 //cucxilau.getImageWidth(), cucxilau.getImageHeight());
 
         setPosition(getPosX(indexY), getPosY(indexX));
+        setSize(AnimalCard.width, AnimalCard.height);
+        setOrigin(getWidth()/2, getHeight()/2);
     }
 
     public AnimalCard(TextureRegion cucxilau, TextureRegion an, int type, TextureRegion selected, int row, int col) {
@@ -59,7 +60,9 @@ public class AnimalCard extends Group{
             this.cucxilau.setScale(AnimalCard.getAnimalScale());
             this.animal.setScale(AnimalCard.getAnimalScale());
             this.border.setScale(AnimalCard.getAnimalScale());
+            //setScale(AnimalCard.getAnimalScale());
         }
+
     }
     public int getType() {
         return type;

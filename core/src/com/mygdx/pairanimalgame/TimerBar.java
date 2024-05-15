@@ -1,5 +1,5 @@
 package com.mygdx.pairanimalgame;
-import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -55,9 +55,6 @@ public class TimerBar extends Actor{
        else timeLeft = 5;
 
        batch.draw(frame, getX() - 5, getY() - 5);
-    }
-    public float getTimeLeft() {
-        return timeLeft;
     }
 }
 
