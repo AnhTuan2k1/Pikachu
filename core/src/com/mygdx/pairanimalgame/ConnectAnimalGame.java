@@ -38,6 +38,7 @@ public class ConnectAnimalGame extends Game {
         assetMN = new AssetManager();
         assetMN.load("texture/bg.atlas", TextureAtlas.class);
         assetMN.load("texture/menu.atlas", TextureAtlas.class);
+        AudioManager.loadSound(assetMN);
 
         ConnectAnimalGame.instance = this;
         setScreen(new LoadingScreen(this));
@@ -57,7 +58,6 @@ public class ConnectAnimalGame extends Game {
     public AssetManager getAssetMN() {
         return assetMN;
     }
-
     public Stage getStage() {
         return stage;
     }

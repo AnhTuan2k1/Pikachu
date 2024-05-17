@@ -34,6 +34,8 @@ public class MyLabel extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         //font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
+        float screenWidth = ConnectAnimalGame.getInstance().getStage().getWidth();
+        //setScale(screenWidth/1280);
         font.draw(batch, text, getX(), getY());
     }
 

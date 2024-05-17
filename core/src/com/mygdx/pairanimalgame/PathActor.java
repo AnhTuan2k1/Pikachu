@@ -3,6 +3,7 @@ package com.mygdx.pairanimalgame;
 import static com.badlogic.gdx.math.MathUtils.random;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -36,6 +37,7 @@ class PathActor extends Actor {
             verticalLine1 = atlas.findRegion("laser1");
             verticalLine2 = atlas.findRegion("laser2");
             horizontalLine = atlas.findRegion("laser12");
+            horizontalLine.getTexture().setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
         }
     }
 

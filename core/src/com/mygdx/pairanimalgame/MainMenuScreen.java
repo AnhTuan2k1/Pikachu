@@ -46,6 +46,7 @@ public class MainMenuScreen implements Screen {
         stage.addActor(createNoticeWindow());
         createUI();
         ConnectAnimalGame.getInstance().filterAsset();
+        AudioManager.playMusic();
     }
 
     @Override
@@ -92,7 +93,7 @@ public class MainMenuScreen implements Screen {
         mainTable.add(scrollPane).expandX().fillX().height(stage.getHeight() * 0.6f); // Mở rộng và lấp đầy theo chiều ngang
 
         stage.addActor(mainTable);
-        mainTable.setPosition(0, -stage.getHeight()*0.13f);
+        mainTable.setPosition(0, -stage.getHeight()*0.1f);
     }
     private Actor createRemoveDataButton() {
         PauseButton pauseButton = new PauseButton(playAtlas);

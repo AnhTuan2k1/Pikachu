@@ -44,6 +44,14 @@ public class MyButton extends Actor {
             }
         });
 
+        addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                AudioManager.playSound(AudioManager.click);
+            }
+        });
+
         if(MyButton.font == null){
             MyButton.font = new BitmapFont(Gdx.files.internal("font/comic.fnt"));
             font.getData().setScale(0.7f);
@@ -83,6 +91,17 @@ public class MyButton extends Actor {
         });
     }
 
+    @Override
+    public void clearListeners() {
+        super.clearListeners();
+        addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                AudioManager.playSound(AudioManager.click);
+            }
+        });
+    }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {

@@ -54,12 +54,12 @@ public class AnimalMatrix extends Actor {
         int r = 6 + Rank.rankName(rankName) + level/3;
         int c = 12 + Rank.rankName(rankName)*2 + (level/3)*2;
         matrix = new AnimalCard[r+2][c+2];
-        int[][] animalType = EvenFrequencyMatrix.generateMatrixWithEvenFrequency(r,c,50);
+        int[][] animalType = EvenFrequencyMatrix.generateMatrixWithEvenFrequency(r,c,39);
         EvenFrequencyMatrix.printMatrix(animalType);
 
         TextureRegion selected = new TextureRegion(animalAtlas.findRegion("selected"));
         TextureRegion cucxilau = new TextureRegion(animalAtlas.findRegion("cucxilau1"));
-        TextureRegion[] animalRegions = new TextureRegion[50];
+        TextureRegion[] animalRegions = new TextureRegion[39];
         for (int i = 0; i<animalRegions.length;i++){
             animalRegions[i] = new TextureRegion(animalAtlas.findRegion(String.valueOf(i)));
         }
@@ -402,12 +402,12 @@ public class AnimalMatrix extends Actor {
         int r = 6 + Rank.rankName(rankName) + level/3;
         int c = 12 + Rank.rankName(rankName)*2 + (level/3)*2;
         matrix = new AnimalCard[r+2][c+2];
-        int[][] animalType = EvenFrequencyMatrix.generateMatrixWithEvenFrequency(r,c,50);
+        int[][] animalType = EvenFrequencyMatrix.generateMatrixWithEvenFrequency(r,c,39);
         EvenFrequencyMatrix.printMatrix(animalType);
 
         TextureRegion selected = new TextureRegion(animalAtlas.findRegion("selected"));
         TextureRegion cucxilau = new TextureRegion(animalAtlas.findRegion("cucxilau1"));
-        TextureRegion[] animalRegions = new TextureRegion[50];
+        TextureRegion[] animalRegions = new TextureRegion[39];
         for (int i = 0; i<animalRegions.length;i++){
             animalRegions[i] = new TextureRegion(animalAtlas.findRegion(String.valueOf(i)));
         }
@@ -532,7 +532,7 @@ public class AnimalMatrix extends Actor {
         EvenFrequencyMatrix.printMatrix(animalType);
         TextureRegion selected = new TextureRegion(animalAtlas.findRegion("selected"));
         TextureRegion cucxilau = new TextureRegion(animalAtlas.findRegion("cucxilau1"));
-        TextureRegion[] animalRegions = new TextureRegion[50];
+        TextureRegion[] animalRegions = new TextureRegion[39];
         for (int i = 0; i<animalRegions.length;i++){
             animalRegions[i] = new TextureRegion(animalAtlas.findRegion(String.valueOf(i)));
         }

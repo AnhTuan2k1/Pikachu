@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 public class ComboBar extends Group {
     private final Texture bar;
+    private final float screenWidth;
     private float timeLeft;
     private int comboStep;
     private final MyLabel label;
@@ -25,12 +26,12 @@ public class ComboBar extends Group {
         this.comboStep = 0;
         this.label = new MyLabel("");
         this.effectLabel = new MyLabel("");
-
-        setBounds(950, 666,200, 7);
+        this.screenWidth = ConnectAnimalGame.getInstance().getStage().getWidth();
+        setBounds(screenWidth*0.75f, 666,200, 7);
         ComboBar.instance = this;
 
-        label.setPosition(50, 22);
-        effectLabel.setPosition(50, 22);
+        label.setPosition(screenWidth*50/1280, 22);
+        effectLabel.setPosition(screenWidth*50/1280, 22);
 
         addActor(label);
         addActor(effectLabel);
@@ -76,6 +77,7 @@ public class ComboBar extends Group {
         effectLabel.setText("COMBO " + comboStep +" (+" + comboStep*20 + " Score)");
         addEffectLabelAction();
         setVisible(true);
+        AudioManager.play_eSound(comboStep);
     }
 
     private void addEffectLabelAction() {
@@ -96,8 +98,8 @@ public class ComboBar extends Group {
         );
         effectLabel.addAction(
                 Actions.sequence(
-                        Actions.moveTo(0, effectLabel.getY()*1.5f, 0.4f, Interpolation.sineOut),
-                        Actions.run(()->effectLabel.setPosition(50, effectLabel.getY()/1.5f))
+                        Actions.moveTo(screenWidth*20/1280, effectLabel.getY()*1.5f, 0.4f, Interpolation.sineOut),
+                        Actions.run(()->effectLabel.setPosition(screenWidth*50/1280, effectLabel.getY()/1.5f))
                 )
 
         );

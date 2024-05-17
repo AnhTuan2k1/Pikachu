@@ -1,12 +1,11 @@
 package com.mygdx.pairanimalgame;
 
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-
-import java.util.Random;
 
 public class StartGameDialog extends Group {
     private final Image ready;
@@ -51,6 +50,7 @@ public class StartGameDialog extends Group {
         GameManager.getInstance().onGamePaused();
         toFront();
 
+        AudioManager.playSound(AudioManager.ready_go);
         ready.addAction(
                 Actions.sequence(
                         Actions.scaleTo(5,5,0.05f, Interpolation.sineOut),
@@ -73,28 +73,29 @@ public class StartGameDialog extends Group {
                         Actions.delay(1.22f),
                         Actions.run(() -> {
                             GameManager.getInstance().onGameResume();
+                            AudioManager.playSound(AudioManager.entry);
                             setVisible(false);
                             remove();
                         })
                 ));
 
-        if(new Random().nextInt(1,3)%2 == 0){
+        if(MathUtils.random(1,2)%2 == 0){
             for (AnimalCard[] row : matrix.matrix) {
                 for (AnimalCard animal : row) {
                     if(animal.isVisible()) {
                         animal.addAction(
                                 Actions.sequence(
-                                        Actions.run(() -> animal.setY(new Random().nextInt(720,1080))),
-                                        Actions.delay( new Random().nextFloat(1,2f)),
+                                        Actions.run(() -> animal.setY(MathUtils.random(720,1080))),
+                                        Actions.delay(MathUtils.random(1,2f)),
                                         Actions.moveTo(
                                                 AnimalCard.getPosX(animal.getIndexY()),
-                                                AnimalCard.getPosY(animal.getIndexX()) - new Random().nextInt(50,80),
-                                                new Random().nextFloat(0.05f,0.2f), Interpolation.sineOut
+                                                AnimalCard.getPosY(animal.getIndexX()) - MathUtils.random(50,80),
+                                                MathUtils.random(0.05f,0.2f), Interpolation.sineOut
                                         ),
                                         Actions.moveTo(
                                                 AnimalCard.getPosX(animal.getIndexY()),
                                                 AnimalCard.getPosY(animal.getIndexX()),
-                                                new Random().nextFloat(0.1f,0.2f), Interpolation.sineIn
+                                                MathUtils.random(0.1f,0.2f), Interpolation.sineIn
                                         )
                                 ));
                     }
@@ -107,14 +108,14 @@ public class StartGameDialog extends Group {
                         animal.addAction(
                                 Actions.sequence(
                                         Actions.fadeOut(0.01f),
-                                        Actions.delay( new Random().nextFloat(1,1.5f)),
+                                        Actions.delay(MathUtils.random(1,1.5f)),
                                         Actions.fadeIn(0.1f, Interpolation.sineIn)
                                 )
                         );
                         animal.addAction(
                                 Actions.sequence(
                                         Actions.scaleTo(0.001f, 0.001f, 0.01f),
-                                        Actions.delay( new Random().nextFloat(1,1.5f)),
+                                        Actions.delay(MathUtils.random(1,1.5f)),
                                         Actions.scaleTo(1f, 1f, 0.1f, Interpolation.sineIn)
                                 )
                         );
