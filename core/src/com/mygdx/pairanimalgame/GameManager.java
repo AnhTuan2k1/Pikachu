@@ -21,6 +21,7 @@ public class GameManager {
     public void setPaused(boolean paused) {
         isPaused = paused;
         notifyObservers();
+        ConnectAnimalGame.getInstance().getAdsController().showBannerAds(paused);
     }
 
     public void onGamePaused()

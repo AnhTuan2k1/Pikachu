@@ -118,7 +118,8 @@ public class MyButton extends Actor {
         }
     }
 
-    public void setText(String text) {
+    public MyButton setText(String text) {
         this.text = text;
+        return this;
     }
 }

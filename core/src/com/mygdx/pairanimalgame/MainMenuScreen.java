@@ -47,6 +47,7 @@ public class MainMenuScreen implements Screen {
         createUI();
         ConnectAnimalGame.getInstance().filterAsset();
         AudioManager.playMusic();
+        ConnectAnimalGame.getInstance().getAdsController().showBannerAds(true);
     }
 
     @Override
@@ -140,6 +141,7 @@ public class MainMenuScreen implements Screen {
         playAtlas = null;
         stage.clear();
         GameManager.getInstance().clear();
+        ConnectAnimalGame.getInstance().getAdsController().showBannerAds(false);
     }
 
     @Override

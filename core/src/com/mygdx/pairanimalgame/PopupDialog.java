@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -94,6 +95,14 @@ public class PopupDialog extends Group {
         Image titleImage = new Image(title);
         titleImage.setSize(title.getRegionWidth()*scale, title.getRegionHeight()*scale);
         titleImage.setPosition(getWidth()/2-titleImage.getWidth()/2, getHeight() - titleImage.getHeight());
+        titleImage.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (ConnectAnimalGame.getInstance().getAdsController().isInterstitialAdLoaded()) {
+                    ConnectAnimalGame.getInstance().getAdsController().showInterstitialAd();
+                }
+            }
+        });
         addActor(titleImage);
 
         leftBtn.setSize(leftBtn.getWidth()*scale*0.9f, leftBtn.getHeight()*scale*0.9f);

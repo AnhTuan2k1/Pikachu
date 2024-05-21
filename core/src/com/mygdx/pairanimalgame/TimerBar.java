@@ -52,7 +52,7 @@ public class TimerBar extends Actor{
 
            batch.draw(bar.getTexture(), getX(), getY(), bar.getRegionX(), bar.getRegionY(), (int) srcWidth, (int) getHeight());
        }
-       else timeLeft = 5;
+       else timeLeft = 3;
 
        batch.draw(frame, getX() - 5, getY() - 5);
     }

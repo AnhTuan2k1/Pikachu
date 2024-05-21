@@ -2,6 +2,8 @@ package com.mygdx.pairanimalgame;
 
 import static com.badlogic.gdx.math.MathUtils.random;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -16,9 +18,12 @@ import java.util.Random;
 
 class PathActor extends Actor {
     static TextureRegion horizontalLine;
+    static Texture horizontalLine2;
     static TextureRegion verticalLine1;
-    static TextureRegion verticalLine2;
+    static Texture verticalLine2;
     private Path path;
+    float timeXCount = 0;
+    float timeYCount = 0;
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
 
     public PathActor(Path path) {
@@ -30,17 +35,26 @@ class PathActor extends Actor {
             public void run() {
                 setVisible(false);
             }
-        }, 0.2f);
+        }, 0.3f);
 
-        if (horizontalLine==null||verticalLine1==null){
-            TextureAtlas atlas = GameScreen.getInstance().getPlayAtlas();
-            verticalLine1 = atlas.findRegion("laser1");
-            verticalLine2 = atlas.findRegion("laser2");
-            horizontalLine = atlas.findRegion("laser12");
-            horizontalLine.getTexture().setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
+        if (verticalLine2==null||horizontalLine2==null){
+            AssetManager assetMN = ConnectAnimalGame.getInstance().getAssetMN();
+            verticalLine2 = assetMN.get("effect/laser1.png", Texture.class);
+            horizontalLine2 = assetMN.get("effect/laser1_2.png", Texture.class);
+
+            verticalLine2.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+            horizontalLine2.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         }
     }
 
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        if(timeXCount < 0.2f) timeXCount+=delta;
+        else timeXCount = timeXCount - 0.2f;
+        if(timeYCount < 0.1f) timeYCount+=delta;
+        else timeYCount = timeYCount - 0.1f;
+    }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
@@ -57,16 +71,18 @@ class PathActor extends Actor {
 
             if (posX1 == posX2) {
                 // Vertical line
-                //TextureRegion line = new Random().nextInt(2)/2==0?verticalLine1:verticalLine2;
                 float length = Math.abs(posY2 - posY1);
-                float width = verticalLine1.getRegionWidth() * AnimalCard.getAnimalScale()*0.7f;
-                batch.draw(verticalLine1, posX1 - width/2, Math.min(posY1, posY2), width, length);
+                float width = verticalLine2.getWidth() * AnimalCard.getAnimalScale()*0.7f;
+                float height = length/(verticalLine2.getHeight()* AnimalCard.getAnimalScale()*0.7f);
+                //batch.draw(verticalLine1, posX1 - width/2, Math.min(posY1, posY2), width, length);
+                batch.draw(verticalLine2, posX1 - width/2, Math.min(posY1, posY2), width, length, timeYCount>0.05?1:0, timeXCount>0.1?height:0, timeYCount>0.05?0:1, timeXCount>0.1?0:height);
             } else if (posY1 == posY2) {
                 // Horizontal line
                 float length = Math.abs(posX2 - posX1);
-                float height = horizontalLine.getRegionHeight() * AnimalCard.getAnimalScale()*0.7f;
-                batch.draw(horizontalLine, Math.min(posX1, posX2), posY1-height/2, length, height);
-
+                float width = length/(horizontalLine2.getWidth()* AnimalCard.getAnimalScale()*0.7f);
+                float height = horizontalLine2.getHeight() * AnimalCard.getAnimalScale()*0.7f;
+                //batch.draw(horizontalLine, Math.min(posX1, posX2), posY1-height/2, length, height);
+                batch.draw(horizontalLine2, Math.min(posX1, posX2), posY1-height/2, length, height, timeXCount>0.1?width:0, timeYCount>0.05?1:0, timeXCount>0.1?0:width, timeYCount>0.05?0:1);
             }
         }
     }

@@ -13,6 +13,7 @@ public class ComboBar extends Group {
     private final float screenWidth;
     private float timeLeft;
     private int comboStep;
+    private int maxCombo;
     private final MyLabel label;
     private final MyLabel effectLabel;
     static private ComboBar instance;
@@ -78,6 +79,7 @@ public class ComboBar extends Group {
         addEffectLabelAction();
         setVisible(true);
         AudioManager.play_eSound(comboStep);
+        setMaxCombo();
     }
 
     private void addEffectLabelAction() {
@@ -107,5 +109,17 @@ public class ComboBar extends Group {
 
     public int getCombo(){
         return comboStep;
+    }
+
+    public int getMaxCombo() {
+        return maxCombo;
+    }
+
+    private void setMaxCombo() {
+        if(this.maxCombo < this.comboStep) this.maxCombo = this.comboStep;
+    }
+
+    public void setTimeLeft(float timeLeft) {
+        this.timeLeft = timeLeft;
     }
 }

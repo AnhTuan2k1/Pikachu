@@ -110,8 +110,11 @@ public class AnimalMatrix extends Actor {
                             increaseScore(20*(1+ComboBar.getInstance().getCombo()));
                             ComboBar.getInstance().nextCombo();
                             if(Pikachu.isWin(matrix)){
-                                if(level >= Rank.rankName(rankName)) turnRank();
-                                else reCreateAnimalMatrix();
+                                GameScreen.getInstance().victoryWindow
+                                        .showDialog(level >= Rank.maxLevel(rankName)
+                                                ? ()-> turnRank()
+                                                : ()-> reCreateAnimalMatrix(), score);
+                                ComboBar.getInstance().setTimeLeft(0);
                             }
                             else if(!Pikachu.anyMatchPossible(matrix)) Pikachu.shuffleMatrixExceptInvisible(matrix);
 
@@ -392,6 +395,7 @@ public class AnimalMatrix extends Actor {
 
     //TimerBar.timeMax = Rank.remainSeconds(rankName);
     private void reCreateAnimalMatrix() {
+        createStartGameDialog();
         freeMatrix();
         matrixBehaviour = new Random().nextInt(7);
         level++;
@@ -459,8 +463,11 @@ public class AnimalMatrix extends Actor {
                             increaseScore(20*(1+ComboBar.getInstance().getCombo()));
                             ComboBar.getInstance().nextCombo();
                             if(Pikachu.isWin(matrix)){
-                                if(level >= Rank.maxLevel(rankName)) turnRank();
-                                else reCreateAnimalMatrix();
+                                GameScreen.getInstance().victoryWindow
+                                        .showDialog(level >= Rank.maxLevel(rankName)
+                                                ? ()-> turnRank()
+                                                : ()-> reCreateAnimalMatrix(), score);
+                                ComboBar.getInstance().setTimeLeft(0);
                             }
                             else if(!Pikachu.anyMatchPossible(matrix)) Pikachu.shuffleMatrixExceptInvisible(matrix);
 
@@ -493,9 +500,12 @@ public class AnimalMatrix extends Actor {
     public void defeat() {
         GameData.save(new GameData(rankName));
         GameData.updateHighScore(score);
+        ComboBar.getInstance().setTimeLeft(0);
 
-        freeMatrix();
-        loadAnimalMatrix(GameData.load(rankName));
+        GameScreen.getInstance().failWindow.showDialog(()->{
+            freeMatrix();
+            loadAnimalMatrix(GameData.load(rankName));
+        }, score, level);
     }
     private void turnRank(){
         GameData.save(new GameData(this, true));
@@ -509,6 +519,7 @@ public class AnimalMatrix extends Actor {
     }
 
     private void loadAnimalMatrix(GameData data) {
+        createStartGameDialog();
         System.out.println("loadAnimalMatrix. load game");
         matrixBehaviour = data.getMatrixBehaviour();
         level = data.getCurrentLevel();
@@ -525,7 +536,6 @@ public class AnimalMatrix extends Actor {
         int[][] animalType = data.getMatrix();
         if(animalType == null) {
             createAnimalMatrix(matrixBehaviour);
-            createStartGameDialog();
             return;
         }
 
@@ -583,8 +593,11 @@ public class AnimalMatrix extends Actor {
                             increaseScore(20*(1+ComboBar.getInstance().getCombo()));
                             ComboBar.getInstance().nextCombo();
                             if(Pikachu.isWin(matrix)){
-                                if(level >= Rank.maxLevel(rankName)) turnRank();
-                                else reCreateAnimalMatrix();
+                                GameScreen.getInstance().victoryWindow
+                                        .showDialog(level >= Rank.maxLevel(rankName)
+                                                        ? ()-> turnRank()
+                                                        : ()-> reCreateAnimalMatrix(), score);
+                                ComboBar.getInstance().setTimeLeft(0);
                             }
                             else if(!Pikachu.anyMatchPossible(matrix)) Pikachu.shuffleMatrixExceptInvisible(matrix);
 
@@ -612,18 +625,16 @@ public class AnimalMatrix extends Actor {
             }
         }
         if(!Pikachu.anyMatchPossible(matrix)) Pikachu.shuffleMatrixExceptInvisible(matrix);
-        createStartGameDialog();
     }
 
     private void createStartGameDialog() {
         System.out.println("------------------createStartGameDialog------------------------");
         new Thread(() -> {
             try {
-                Thread.sleep(10);
                 Gdx.app.postRunnable(() -> {
                     stage.addActor(new StartGameDialog(stage));
                 });
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }).start();

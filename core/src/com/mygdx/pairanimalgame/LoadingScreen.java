@@ -3,6 +3,7 @@ package com.mygdx.pairanimalgame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -52,6 +53,8 @@ public class LoadingScreen implements Screen {
             assetMN.load("effect/firework.p", ParticleEffect.class);
             assetMN.load("effect/laze.p", ParticleEffect.class);
             assetMN.load("effect/laze2.p", ParticleEffect.class);
+            assetMN.load("effect/laser1.png", Texture.class);
+            assetMN.load("effect/laser1_2.png", Texture.class);
         }
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
@@ -73,6 +76,8 @@ public class LoadingScreen implements Screen {
         //assetMN.load("effect/firework.p", ParticleEffect.class);
         //assetMN.load("effect/laze.p", ParticleEffect.class);
         //assetMN.load("effect/laze2.p", ParticleEffect.class);
+        //assetMN.load("assets/effect/laser1.png", Texture.class);
+        //assetMN.load("assets/effect/laser1_2.png", Texture.class);
     }
 
     public void resize(int width, int height) {

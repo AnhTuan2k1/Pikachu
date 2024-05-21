@@ -32,6 +32,8 @@ public class GameScreen implements Screen {
     private GameData gameData;
     private TimerBar timerbar;
     private PopupDialog pauseWindow;
+    public VictoryPopup victoryWindow;
+    public FailPopup failWindow;
     private static GameScreen instance;
     public static GameScreen getInstance(){
         if(instance == null)
@@ -122,7 +124,17 @@ public class GameScreen implements Screen {
         stage.addActor(createLevelTextLabel());
         stage.addActor(createPauseWindow());
         stage.addActor(ComboBar.getInstance());
+        stage.addActor(createVictoryWindow());
+        stage.addActor(createFailWindow());
         stage.addActor(createBackGround());
+    }
+    private Actor createFailWindow() {
+        failWindow = new FailPopup(stage, assetMN, animalMatrix.score);
+        return failWindow;
+    }
+    private Actor createVictoryWindow() {
+        victoryWindow = new VictoryPopup(stage, assetMN);
+        return victoryWindow;
     }
 
     private Actor createPauseWindow(){

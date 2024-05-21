@@ -19,7 +19,11 @@ public class ConnectAnimalGame extends Game {
     private OrthographicCamera cam;
     private Viewport viewport;
     private static ConnectAnimalGame instance;
+    private IAdsController adsController;
 
+    public ConnectAnimalGame(IAdsController handler) {
+        adsController = handler;
+    }
     @Override
     public void create() {
         int screenWidth = Gdx.graphics.getWidth();
@@ -60,6 +64,10 @@ public class ConnectAnimalGame extends Game {
     }
     public Stage getStage() {
         return stage;
+    }
+
+    public IAdsController getAdsController() {
+        return adsController;
     }
 
     @Override

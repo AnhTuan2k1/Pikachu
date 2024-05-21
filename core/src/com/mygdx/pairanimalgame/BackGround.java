@@ -7,11 +7,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public class BackGround extends Actor implements IGameObserver{
     private final TextureRegion textureRegion;
+    public static BackGround instance;
     public BackGround(Stage stage, TextureRegion textureRegion) {
         this.textureRegion = textureRegion;
         setBounds(0, 0, stage.getWidth(), stage.getHeight());
 
         GameManager.getInstance().registerObserver(this);
+        BackGround.instance = this;
     }
 
     @Override
