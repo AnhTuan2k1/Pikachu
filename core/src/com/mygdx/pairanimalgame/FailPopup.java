@@ -61,6 +61,7 @@ public class FailPopup extends Group {
         exit.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                GameScreen.getInstance().getAnimalMatrix().matrix = null;
                 ConnectAnimalGame.getInstance().setScreen(new MainMenuScreen(ConnectAnimalGame.getInstance()));
             }
         });

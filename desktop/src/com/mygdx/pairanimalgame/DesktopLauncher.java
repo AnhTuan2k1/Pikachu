@@ -33,4 +33,14 @@ public class DesktopLauncher implements IAdsController{
 	public boolean isInterstitialAdLoaded() {
 		return false;
 	}
+
+	@Override
+	public void showRewardedAd() {
+
+	}
+
+	@Override
+	public boolean isRewardedAdLoaded() {
+		return false;
+	}
 }

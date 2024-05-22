@@ -3,8 +3,6 @@ package com.mygdx.pairanimalgame;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -12,7 +10,6 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.google.android.gms.ads.AdError;
@@ -22,36 +19,20 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.ads.rewarded.RewardItem;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 
 public class AndroidLauncher extends AndroidApplication implements IAdsController{
 	private AdView adView;
 	private InterstitialAd interstitialAd;
+	private RewardedAd mRewardedAd;
+	private boolean isRewardedAdLoading = false;
 	private Handler adHandler;
 
-	//protected View gameView;
-	private final int SHOW_ADS = 1;
-	private final int HIDE_ADS = 0;
-
-	protected Handler handler = new Handler(Looper.getMainLooper())
-	{
-		@Override
-		public void handleMessage(Message msg) {
-			switch(msg.what) {
-				case SHOW_ADS:
-				{
-					adView.setVisibility(View.VISIBLE);
-					break;
-				}
-				case HIDE_ADS:
-				{
-					adView.setVisibility(View.GONE);
-					break;
-				}
-			}
-		}
-	};
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,6 +41,7 @@ public class AndroidLauncher extends AndroidApplication implements IAdsControlle
 		adHandler = new Handler(Looper.getMainLooper());
 		initializeRelativeLayout(config);
 		loadInterstitialAd();
+		loadRewardedAd();
 	}
 
 	private void initializeRelativeLayout(AndroidApplicationConfiguration config) {
@@ -131,6 +113,65 @@ public class AndroidLauncher extends AndroidApplication implements IAdsControlle
 	@Override
 	public boolean isInterstitialAdLoaded() {
 		return interstitialAd != null;
+	}
+	private void loadRewardedAd() {
+		if (isRewardedAdLoading || mRewardedAd != null) {
+			return;
+		}
+
+		isRewardedAdLoading = true;
+		AdRequest adRequest = new AdRequest.Builder().build();
+		RewardedAd.load(this, "ca-app-pub-2135695156084823/6501012249", adRequest, new RewardedAdLoadCallback() {
+			@Override
+			public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
+				mRewardedAd = rewardedAd;
+				isRewardedAdLoading = false;
+			}
+
+			@Override
+			public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+				mRewardedAd = null;
+				isRewardedAdLoading = false;
+			}
+		});
+	}
+	@Override
+	public void showRewardedAd() {
+		adHandler.post(()->{
+			if (mRewardedAd != null) {
+				mRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+					@Override
+					public void onAdDismissedFullScreenContent() {
+						// Quảng cáo đã bị đóng
+						mRewardedAd = null;
+						loadRewardedAd();
+					}
+
+					@Override
+					public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+						mRewardedAd = null;
+						loadRewardedAd();
+					}
+				});
+				mRewardedAd.show(this, new OnUserEarnedRewardListener() {
+					@Override
+					public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+						// Người dùng đã xem xong quảng cáo và nhận được phần thưởng
+						// Bạn có thể xử lý phần thưởng tại đây
+					}
+				});
+
+				// Sau khi hiển thị quảng cáo, tải lại quảng cáo mới
+				mRewardedAd = null;
+				loadRewardedAd();
+			}
+		});
+
+	}
+
+	@Override
+	public boolean isRewardedAdLoaded() {
+		return mRewardedAd != null;
 	}
 
 	@Override

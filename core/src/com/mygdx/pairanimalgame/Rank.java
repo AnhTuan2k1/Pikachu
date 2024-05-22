@@ -52,11 +52,11 @@ public class Rank {
         if(Objects.equals(rankName, Rank.Rank1.name))
             return 1;
         else if(Objects.equals(rankName, Rank.Rank2.name))
-            return 3;
+            return 2;
         else if(Objects.equals(rankName, Rank.Rank3.name))
-            return 5;
+            return 3;
         else if(Objects.equals(rankName, Rank.Rank4.name))
-            return 7;
+            return 4;
         return 0;
     }
 

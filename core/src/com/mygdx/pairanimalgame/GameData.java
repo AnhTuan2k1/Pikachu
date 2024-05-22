@@ -17,21 +17,31 @@ public class GameData {
     private boolean isWon = false;
 
     public GameData(AnimalMatrix animalMatrix) {
-        int r = animalMatrix.matrix.length;
-        int c = animalMatrix.matrix[0].length;
-        matrix = new int[r-2][c-2];
-        this.currentLevel = animalMatrix.level;
-        this.matrixBehaviour = animalMatrix.matrixBehaviour;
-        this.rankName = animalMatrix.rankName;
-        this.score = animalMatrix.score;
-        this.remainSeconds = animalMatrix.remainSeconds;
+        if(animalMatrix.matrix != null){
+            int r = animalMatrix.matrix.length;
+            int c = animalMatrix.matrix[0].length;
+            matrix = new int[r-2][c-2];
+            this.currentLevel = animalMatrix.level;
+            this.matrixBehaviour = animalMatrix.matrixBehaviour;
+            this.rankName = animalMatrix.rankName;
+            this.score = animalMatrix.score;
+            this.remainSeconds = animalMatrix.remainSeconds;
 
-        for (int i = 0; i<matrix.length; i++){
-            for(int j = 0; j<matrix[0].length; j++){
-                if(animalMatrix.matrix[i+1][j+1].isActive())
-                    matrix[i][j] = animalMatrix.matrix[i+1][j+1].getType();
-                else matrix[i][j] = -1;
+            for (int i = 0; i<matrix.length; i++){
+                for(int j = 0; j<matrix[0].length; j++){
+                    if(animalMatrix.matrix[i+1][j+1].isActive())
+                        matrix[i][j] = animalMatrix.matrix[i+1][j+1].getType();
+                    else matrix[i][j] = -1;
+                }
             }
+        }
+        else {
+            this.rankName = animalMatrix.rankName;
+            this.currentLevel = 1;
+            this.matrix = null;
+            this.matrixBehaviour = 0;
+            this.score = 0;
+            this.remainSeconds = Rank.remainSeconds(rankName);
         }
     }
     public GameData(AnimalMatrix animalMatrix, boolean isWin) {

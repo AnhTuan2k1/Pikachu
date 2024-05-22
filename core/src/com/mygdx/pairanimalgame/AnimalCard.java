@@ -2,6 +2,7 @@ package com.mygdx.pairanimalgame;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -137,34 +138,14 @@ public class AnimalCard extends Group{
 
         stage.addActor(new PathActor(Pikachu.foundPath));
 
-/*        for(int i = 1; i<Pikachu.foundPath.points.size(); i++){
-            Path.Point p1 = Pikachu.foundPath.points.get(i - 1);
-            Path.Point p2 = Pikachu.foundPath.points.get(i);
-            if(p1.x == p2.x){
-                if(p1.y < p2.y){
-                    for (int j = p2.y; j > p1.y; j--){
-                        stage.addActor(effectMN.getLazeHorizontalEffectActor(new Path.Point(p1.x, j)));
-                    }
-                }
-                else if(p1.y > p2.y) {
-                    for (int j = p1.y; j > p2.y; j--) {
-                        stage.addActor(effectMN.getLazeHorizontalEffectActor(new Path.Point(p1.x, j)));
-                    }
-                }
-            }
-            else if(p1.y == p2.y){
-                if(p1.x < p2.x){
-                    for (int j = p1.x; j < p2.x; j++){
-                        stage.addActor(effectMN.getLazeVerticalEffectActor(new Path.Point(j, p1.y)));
-                    }
-                }
-                else if(p1.x > p2.x) {
-                    for (int j = p2.x; j < p1.x; j++) {
-                        stage.addActor(effectMN.getLazeVerticalEffectActor(new Path.Point(j, p1.y)));
-                    }
-                }
-            }
-        }*/
+        animal.setOrigin(getWidth()/2, getHeight()/2);
+        animal.addAction(Actions.fadeIn(0.1f, Interpolation.sineIn));
+        animal.addAction(
+                Actions.sequence(
+                        Actions.scaleTo(3f, 3f, 0.1f, Interpolation.sineIn),
+                        Actions.run(()->animal.setScale(1))
+                )
+        );
     }
 
     public boolean isActionActive() {
